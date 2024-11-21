@@ -1,10 +1,14 @@
 {
-  "telegramApiToken": null,
-  "chatId": null,
   "projects": [
     {
-      "topic": "",
-      "url": ""
+      "topic": "Jerusalem Apartments to Rent",
+      "url": "https://www.yad2.co.il/realestate/rent?city=3000",
+      "disabled": false
+    },
+    {
+      "topic": "Jerusalem Apartments to Sell",
+      "url": "https://www.yad2.co.il/realestate/sale?city=3000",
+      "disabled": false
     }
   ]
 }
