@@ -24,6 +24,9 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "${{ secrets.GIT_CONFIG_EMAIL }}"
 
+      - name: Ensure data directory exists
+          run: mkdir -p data
+  
       - name: Run scraper
         run: |
           export API_TOKEN=${{ secrets.API_TOKEN }}
