@@ -2,10 +2,8 @@ name: Yad2 Scraper
 
 on:
   schedule:
-    - cron: '*/15 5-17 * * *'
-  workflow_dispatch:
-    branches:
-      - '**'
+    - cron: '*/15 5-17 * * *'  # Run every 15 minutes from 05:00 to 17:00 UTC
+  workflow_dispatch:           # Allows manual runs
 
 jobs:
   scraper:
@@ -16,25 +14,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set up Node.js (v20)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
       - name: Install packages
         run: yarn install
 
-      - name: Setup git config
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "${{ secrets.GIT_CONFIG_EMAIL }}"
-
       - name: Ensure data directory exists
-        run: |
-          mkdir -p data
-  
+        run: mkdir -p data
+
       - name: Run scraper
         run: |
           export API_TOKEN=${{ secrets.API_TOKEN }}
           export CHAT_ID=${{ secrets.CHAT_ID }}
           yarn scrape
 
-      - name: Push new json data if needed
+      - name: Push new JSON data if needed
         run: |
           if [ -f ./push_me ]; then
             echo Pushing to Github...
