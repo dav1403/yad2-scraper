@@ -25,7 +25,8 @@ jobs:
           git config user.email "${{ secrets.GIT_CONFIG_EMAIL }}"
 
       - name: Ensure data directory exists
-          run: mkdir -p data
+        run: |
+          mkdir -p data
   
       - name: Run scraper
         run: |
