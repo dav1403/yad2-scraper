@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const cheerio = require('cheerio');
 
 // Define the data directory
 const dataDir = path.join(__dirname, 'data');
@@ -16,20 +17,34 @@ if (!fs.existsSync(dataDir)) {
 async function scrape() {
     const apiToken = process.env.API_TOKEN;
     const chatId = process.env.CHAT_ID;
-    const topic = "Jerusalem Apartments to Rent"; // Example topic
+    const topic = "Jerusalem Apartments to Rent";
     const url = "https://www.yad2.co.il/realestate/rent?city=3000";
 
     console.log(`Starting scanning for topic: ${topic}`);
     console.log(`Scanning URL: ${url}`);
 
     try {
-        // Simulated listing fetch (replace this with actual logic for fetching listings)
-        const listings = [
-            { id: 1, title: "Test Apartment 1", price: "5000 ILS", link: url },
-            { id: 2, title: "Test Apartment 2", price: "6000 ILS", link: url }
-        ];
+        // Fetch the HTML content of the page
+        const response = await axios.get(url);
+        const $ = cheerio.load(response.data);
 
-        // Log the number of listings found
+        // Parse the listings
+        const listings = [];
+        $('.feeditem').each((i, element) => {
+            const title = $(element).find('.title').text().trim();
+            const price = $(element).find('.price').text().trim();
+            const link = $(element).find('.feeditem a').attr('href');
+
+            if (title && price && link) {
+                listings.push({
+                    id: i + 1,
+                    title,
+                    price,
+                    link: `https://www.yad2.co.il${link}`
+                });
+            }
+        });
+
         console.log(`Found ${listings.length} listings.`);
 
         if (listings.length === 0) {
@@ -42,7 +57,7 @@ async function scrape() {
         fs.writeFileSync(dataFilePath, JSON.stringify(listings, null, 2));
         console.log(`Saved data to file: ${dataFilePath}`);
 
-        // Send Telegram notifications for each listing
+        // Send Telegram notifications
         for (const listing of listings) {
             const message = `New Listing Found: ${listing.title}\nPrice: ${listing.price}\nView Listing: ${listing.link}`;
             await axios.post(`https://api.telegram.org/bot${apiToken}/sendMessage`, {
@@ -62,5 +77,5 @@ scrape()
     .then(() => console.log("Scraper completed successfully."))
     .catch((error) => {
         console.error("Scraper failed:", error);
-        process.exit(1); // Exit with an error code
+        process.exit(1);
     });
