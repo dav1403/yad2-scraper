@@ -13,7 +13,6 @@ if (!fs.existsSync(dataDir)) {
     console.log(`Directory already exists: ${dataDir}`);
 }
 
-// Replace this with your actual scraper logic
 async function scrape() {
     const apiToken = process.env.API_TOKEN;
     const chatId = process.env.CHAT_ID;
@@ -24,10 +23,10 @@ async function scrape() {
     console.log(`Scanning URL: ${url}`);
 
     try {
-        // Simulate fetching data (replace with actual HTTP request logic)
+        // Simulated listing fetch (replace this with actual logic for fetching listings)
         const listings = [
-            { id: 1, title: "Apartment 1", price: "5000 ILS", link: url },
-            { id: 2, title: "Apartment 2", price: "6000 ILS", link: url }
+            { id: 1, title: "Test Apartment 1", price: "5000 ILS", link: url },
+            { id: 2, title: "Test Apartment 2", price: "6000 ILS", link: url }
         ];
 
         // Log the number of listings found
@@ -43,7 +42,7 @@ async function scrape() {
         fs.writeFileSync(dataFilePath, JSON.stringify(listings, null, 2));
         console.log(`Saved data to file: ${dataFilePath}`);
 
-        // Send a notification for each listing
+        // Send Telegram notifications for each listing
         for (const listing of listings) {
             const message = `New Listing Found: ${listing.title}\nPrice: ${listing.price}\nView Listing: ${listing.link}`;
             await axios.post(`https://api.telegram.org/bot${apiToken}/sendMessage`, {
@@ -52,10 +51,9 @@ async function scrape() {
             });
             console.log(`Notification sent for listing: ${listing.title}`);
         }
-
     } catch (error) {
         console.error(`Error occurred during scraping: ${error.message}`);
-        throw new Error(error);
+        throw error;
     }
 }
 
