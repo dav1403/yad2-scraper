@@ -18,7 +18,7 @@ async function scrape() {
     const apiToken = process.env.API_TOKEN;
     const chatId = process.env.CHAT_ID;
     const topic = "Jerusalem Apartments to Rent";
-    const url = "https://www.yad2.co.il/realestate/rent?city=3000";
+    const url = "https://www.yad2.co.il/realestate/forsale?topArea=100&area=7&city=3000&zoom=11";
 
     console.log(`Starting scanning for topic: ${topic}`);
     console.log(`Scanning URL: ${url}`);
